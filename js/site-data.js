@@ -13,9 +13,9 @@
  */
 
 const SITE_INFO = {
-  name: 'rszs',
-  title: 'rszs 的文字仓库',
-  description: '一个以文字为主的地方。'
+  name: '人死在世',
+  title: '人死在世',
+  description: '靈光一現'
 };
 
 const SITE_CATEGORIES = [
