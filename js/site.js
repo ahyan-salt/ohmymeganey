@@ -7,11 +7,11 @@
   'use strict';
 
   var NAV_ITEMS = [
-    { id: 'original', label: '登基', href: 'list.html?cat=original' },
-    { id: 'fanfic', label: '求雨', href: 'list.html?cat=fanfic' },
-    { id: 'blog', label: '火鍋燒烤', href: 'list.html?cat=blog' },
-    { id: 'about', label: '關於我', href: 'about.html' },
-    { id: 'contact', label: '聯繫我', href: 'contact.html' }
+    { id: 'original', label: '登基（原创）', href: 'list.html?cat=original' },
+    { id: 'fanfic', label: '求雨（同人）', href: 'list.html?cat=fanfic' },
+    { id: 'blog', label: '火锅烧烤（博客）', href: 'list.html?cat=blog' },
+    { id: 'about', label: '关于我', href: 'about.html' },
+    { id: 'contact', label: '联系我', href: 'contact.html' }
   ];
 
   function categoryOf(id) {
@@ -63,9 +63,9 @@
   /* ---------- 左侧竖排导航 ---------- */
 
   function renderNav() {
-    var host = document.querySelector('[data-nav]');
+    var host = document.querySelector('.sidebar-nav');
     if (!host) return;
-    var current = document.body.getAttribute('data-nav') || '';
+    var current = document.body.getAttribute('data-nav-active') || '';
     if (document.body.getAttribute('data-page') === 'list') {
       var catParam = new URLSearchParams(window.location.search).get('cat');
       if (catParam) current = catParam;
