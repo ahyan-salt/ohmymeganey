@@ -126,10 +126,13 @@
       return b.offsetWidth * b.offsetHeight - a.offsetWidth * a.offsetHeight;
     });
     els.forEach(function (el) {
+      /* 字号越大（1.0rem ~ 2.4rem），保留的弹开力度越大 */
+      var rem = parseFloat(el.style.fontSize) || 1;
       cloudState.push({
         el: el,
         w: el.offsetWidth || 40,
         h: el.offsetHeight || 24,
+        sizeRatio: Math.max(0, Math.min(1, (rem - 1) / 1.4)),
         bx: 0, by: 0,
         ox: 0, oy: 0, vx: 0, vy: 0,
         scale: 1,
@@ -228,13 +231,17 @@
     return (ok || force) ? placed : null;
   }
 
-  /* 悬浮：轻微上下浮动；指针划过时把附近词条弹开 */
+  /* 悬浮：轻微上下浮动；指针划过时把附近词条弹开（字号越小弹得越少）；
+     指针静止时，正对的词条放大并吸附到指针附近 */
   function startCloudMotion(host) {
     if (cloudRaf) return;
 
-    var RADIUS = 82;    /* 指针影响半径 */
-    var PUSH = 30;      /* 最大弹开距离 */
-    var pointer = { x: -9999, y: -9999, active: false };
+    var RADIUS = 82;          /* 指针影响半径 */
+    var PUSH = 30;            /* 最大弹开距离（字号最大的词条） */
+    var MIN_PUSH_RATIO = 0.35;/* 最小字号保留的弹开比例 */
+    var STILL_MS = 140;       /* 指针静止多久算"停住" */
+    var HOVER_SCALE = 2;      /* 正对时放大的倍数 */
+    var pointer = { x: -9999, y: -9999, lx: -9999, ly: -9999, active: false, still: 0 };
 
     host.addEventListener('pointermove', function (e) {
       var rect = host.getBoundingClientRect();
@@ -244,11 +251,18 @@
     });
     host.addEventListener('pointerleave', function () {
       pointer.active = false;
+      pointer.still = 0;
     });
 
     cloudState.forEach(function (item) {
-      item.el.addEventListener('pointerenter', function () { item.hovered = true; });
-      item.el.addEventListener('pointerleave', function () { item.hovered = false; });
+      item.el.addEventListener('pointerenter', function () {
+        item.hovered = true;
+        item.el.style.zIndex = 10;
+      });
+      item.el.addEventListener('pointerleave', function () {
+        item.hovered = false;
+        item.el.style.zIndex = '';
+      });
     });
 
     var last = 0;
@@ -256,18 +270,30 @@
       var dt = last ? Math.min((now - last) / 16.7, 3) : 1;
       last = now;
 
+      if (pointer.active) {
+        var steady = Math.abs(pointer.x - pointer.lx) < 1.5 && Math.abs(pointer.y - pointer.ly) < 1.5;
+        pointer.still = steady ? pointer.still + dt * 16.7 : 0;
+        pointer.lx = pointer.x;
+        pointer.ly = pointer.y;
+      }
+
       cloudState.forEach(function (item) {
         var tx = Math.sin(now * 0.0007 + item.phase) * 3.2;   /* 浮动目标位移 */
         var ty = Math.cos(now * 0.0009 + item.phase * 1.7) * 3.2;
 
-        if (pointer.active) {
+        /* 被指针正对的词条：停住时吸过去 */
+        if (item.hovered && pointer.active && pointer.still > STILL_MS) {
+          tx = (pointer.x - item.w / 2) - item.bx;
+          ty = (pointer.y - item.h / 2) - item.by;
+        } else if (pointer.active) {
+          /* 其他词条：按字号大小决定被推开多远 */
           var cx = item.bx + item.ox + item.w / 2;
           var cy = item.by + item.oy + item.h / 2;
           var dx = cx - pointer.x;
           var dy = cy - pointer.y;
           var dist = Math.sqrt(dx * dx + dy * dy) || 0.001;
           if (dist < RADIUS) {
-            var push = (1 - dist / RADIUS) * PUSH;
+            var push = (1 - dist / RADIUS) * PUSH * (MIN_PUSH_RATIO + (1 - MIN_PUSH_RATIO) * item.sizeRatio);
             tx += dx / dist * push;
             ty += dy / dist * push;
           }
@@ -281,8 +307,8 @@
         item.ox += item.vx * dt;
         item.oy += item.vy * dt;
 
-        var wantScale = item.hovered ? 1.08 : 1;
-        item.scale += (wantScale - item.scale) * 0.15 * dt;
+        var wantScale = item.hovered ? HOVER_SCALE : 1;
+        item.scale += (wantScale - item.scale) * 0.12 * dt;
 
         item.el.style.transform = 'translate3d(' + item.ox.toFixed(2) + 'px,' +
           item.oy.toFixed(2) + 'px,0) scale(' + item.scale.toFixed(3) + ')';
