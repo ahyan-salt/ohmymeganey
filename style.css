@@ -314,6 +314,39 @@ a:hover {
   border-top: 1px solid var(--line);
 }
 
+.article-body h4 {
+  margin: 28px 0 8px;
+  font-size: 0.98rem;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.article-body code {
+  padding: 1px 5px;
+  background: var(--bg-soft);
+  border: 1px solid var(--line);
+  border-radius: 3px;
+  font-family: ui-monospace, SFMono-Regular, Consolas, "Courier New", monospace;
+  font-size: 0.88em;
+}
+
+.article-body pre {
+  margin: 0 0 22px;
+  padding: 14px 16px;
+  background: var(--bg-soft);
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  overflow-x: auto;
+}
+
+.article-body pre code {
+  padding: 0;
+  background: none;
+  border: none;
+  font-size: 0.85rem;
+  line-height: 1.7;
+}
+
 .article-back {
   margin: 48px 0 0;
   padding-top: 20px;
