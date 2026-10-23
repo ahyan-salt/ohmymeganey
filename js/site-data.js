@@ -21,18 +21,18 @@ const SITE_INFO = {
 const SITE_CATEGORIES = [
   {
     id: 'original',
-    name: '登基（原创）',
-    desc: '自己写的故事与散文，版权归我。'
+    name: '登基',
+    desc: '原創。我要當皇帝！'
   },
   {
     id: 'fanfic',
-    name: '求雨（同人）',
-    desc: '借别人的世界，下场自己的雨。'
+    name: '求雨',
+    desc: '同人。模仿原作的巫祝。'
   },
   {
     id: 'blog',
-    name: '火锅烧烤（博客）',
-    desc: '生活、读书、杂谈，什么都聊一点。'
+    name: '火鍋燒烤',
+    desc: '近況像火鍋，思考即燒烤'
   }
 ];
 
