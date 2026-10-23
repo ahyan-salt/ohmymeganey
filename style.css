@@ -146,11 +146,27 @@ a:hover {
 /* ---------- 首页词条云 ---------- */
 
 .tag-cloud {
+  position: relative;
   display: flex;
   flex-wrap: wrap;
   align-items: baseline;
   gap: 10px 26px;
   padding: 8px 0 0;
+}
+
+/* 由脚本计算位置后启用：词条自由散落，不再并排 */
+.tag-cloud.is-cloud {
+  display: block;
+  min-height: 300px;
+}
+
+.tag-cloud.is-cloud .cloud-item {
+  position: absolute;
+  left: 0;
+  top: 0;
+  white-space: nowrap;
+  will-change: transform;
+  transition: color 0.18s ease;
 }
 
 .cloud-item {
