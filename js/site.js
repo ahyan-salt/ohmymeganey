@@ -240,7 +240,7 @@
     var PUSH = 30;            /* 最大弹开距离（字号最大的词条） */
     var MIN_PUSH_RATIO = 0.35;/* 最小字号保留的弹开比例 */
     var STILL_MS = 140;       /* 指针静止多久算"停住" */
-    var HOVER_SCALE = 2;      /* 正对时放大的倍数 */
+    var HOVER_SCALE = 1.08;      /* 正对时放大的倍数 */
     var pointer = { x: -9999, y: -9999, lx: -9999, ly: -9999, active: false, still: 0 };
 
     host.addEventListener('pointermove', function (e) {
