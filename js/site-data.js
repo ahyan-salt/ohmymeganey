@@ -69,19 +69,6 @@ const SITE_POSTS = [
     "content": "<p>深夜写字的习惯，已经维持了很多年。</p>\n<p>夜里安静，字句落下来的声音都听得见。</p>"
   },
   {
-    "slug": "sample-blog-2",
-    "title": "示例：一顿火锅的意义",
-    "category": "blog",
-    "tags": [
-      "美食",
-      "生活记录",
-      "城市"
-    ],
-    "date": "2026-09-05",
-    "excerpt": "吃饭这件事，认真起来也是一门学问。",
-    "content": "<p>吃饭这件事，认真起来也是一门学问。</p>"
-  },
-  {
     "slug": "sample-fanfic-2",
     "title": "示例：同人长篇·第一章",
     "category": "fanfic",
