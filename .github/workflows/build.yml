@@ -1,1 +1,47 @@
+# 说明：这个工作流让你不必在本地安装 Node。
+# 只要往 posts/ 里新增或修改 .md（或在 GitHub 网页上直接新建文件），
+# GitHub 就会自动运行 node build.js，并把更新后的 js/site-data.js 提交回去，
+# 网站随即更新。
 
+name: 自动构建站点数据
+
+on:
+  push:
+    branches: [main, master]
+    paths:
+      - 'posts/**'
+      - 'site.config.json'
+      - 'build.js'
+      - 'js/markdown.js'
+      - '.github/workflows/build.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 检出仓库
+        uses: actions/checkout@v4
+
+      - name: 准备 Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: 生成 js/site-data.js
+        run: node build.js
+
+      - name: 提交更新
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          if [ -n "$(git status --porcelain js/site-data.js)" ]; then
+            git add js/site-data.js
+            git commit -m "chore: 重新生成 site-data.js [skip ci]"
+            git push
+          else
+            echo "site-data.js 没有变化，无需提交"
+          fi
