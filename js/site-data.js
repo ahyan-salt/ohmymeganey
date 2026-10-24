@@ -82,19 +82,6 @@ const SITE_POSTS = [
     "content": "<p>第一章示例正文。</p>"
   },
   {
-    "slug": "sample-blog-3",
-    "title": "示例：我的写作工具与流程",
-    "category": "blog",
-    "tags": [
-      "写作",
-      "工具",
-      "编程"
-    ],
-    "date": "2026-07-14",
-    "excerpt": "工具越简单，越容易开始写。",
-    "content": "<p>工具越简单，越容易开始写。</p>"
-  },
-  {
     "slug": "blog-260522",
     "title": "【龍袍repo】這種又新又舊的感覺，對我來說剛剛好",
     "category": "blog",
