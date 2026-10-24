@@ -45,3 +45,7 @@ jobs:
           else
             echo "site-data.js 没有变化，无需提交"
           fi
+
+concurrency:
+  group: build-${{ github.ref }}
+  cancel-in-progress: true
