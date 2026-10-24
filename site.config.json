@@ -1,22 +1,22 @@
 {
-  "name": "rszs",
-  "title": "rszs 的文字仓库",
-  "description": "一个以文字为主的地方。",
+  "name": "人死在世",
+  "title": "人死在世",
+  "description": "靈光一現",
   "categories": [
     {
       "id": "original",
-      "name": "登基（原创）",
-      "desc": "自己写的故事与散文，版权归我。"
+      "name": "登基",
+      "desc": "原創。做虛構皇帝！"
     },
     {
       "id": "fanfic",
-      "name": "求雨（同人）",
-      "desc": "借别人的世界，下场自己的雨。"
+      "name": "求雨",
+      "desc": "同人。模仿原作的巫祝。"
     },
     {
       "id": "blog",
-      "name": "火锅烧烤（博客）",
-      "desc": "生活、读书、杂谈，什么都聊一点。"
+      "name": "火鍋燒烤",
+      "desc": "近況燉煮與小思考"
     }
   ]
 }

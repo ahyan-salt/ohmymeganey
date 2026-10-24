@@ -7,11 +7,11 @@
   'use strict';
 
   var NAV_ITEMS = [
-    { id: 'original', label: '登基（原创）', href: 'list.html?cat=original' },
-    { id: 'fanfic', label: '求雨（同人）', href: 'list.html?cat=fanfic' },
-    { id: 'blog', label: '火锅烧烤（博客）', href: 'list.html?cat=blog' },
-    { id: 'about', label: '关于我', href: 'about.html' },
-    { id: 'contact', label: '联系我', href: 'contact.html' }
+    { id: 'original', label: '登基', href: 'list.html?cat=original' },
+    { id: 'fanfic', label: '求雨', href: 'list.html?cat=fanfic' },
+    { id: 'blog', label: '火鍋燒烤', href: 'list.html?cat=blog' },
+    { id: 'about', label: '關於我', href: 'about.html' },
+    { id: 'contact', label: '聯繫我', href: 'contact.html' }
   ];
 
   var REDUCED_MOTION = !!(window.matchMedia &&
@@ -106,11 +106,13 @@
       host.innerHTML = '<p class="empty">还没有标签，去写第一篇文章吧。</p>';
       return;
     }
-    var max = tags[0].count;
-    var min = tags[tags.length - 1].count;
+    /* 字号只跟文章数有关：1 篇 = 最小字号，满 10 篇 = 最大字号，之后不再变大 */
+    var MIN_SIZE = 1.125;   /* 18px，比原来的 16px 大 2px */
+    var MAX_SIZE = 2.4;     /* 38.4px，固定上限 */
+    var COUNT_CAP = 10;
     host.innerHTML = tags.map(function (item) {
-      var ratio = max === min ? 0.5 : (item.count - min) / (max - min);
-      var size = 1 + ratio * 1.4;          /* 1.0rem ~ 2.4rem */
+      var ratio = Math.min(1, (item.count - 1) / (COUNT_CAP - 1));
+      var size = MIN_SIZE + ratio * (MAX_SIZE - MIN_SIZE);
       var weight = ratio > 0.55 ? 600 : 400;
       var shade = Math.round(45 + (1 - ratio) * 40); /* 深灰 -> 浅灰 */
       return '<a class="cloud-item" href="' + tagHref(item.tag) + '"' +
@@ -126,13 +128,10 @@
       return b.offsetWidth * b.offsetHeight - a.offsetWidth * a.offsetHeight;
     });
     els.forEach(function (el) {
-      /* 字号越大（1.0rem ~ 2.4rem），保留的弹开力度越大 */
-      var rem = parseFloat(el.style.fontSize) || 1;
       cloudState.push({
         el: el,
         w: el.offsetWidth || 40,
         h: el.offsetHeight || 24,
-        sizeRatio: Math.max(0, Math.min(1, (rem - 1) / 1.4)),
         bx: 0, by: 0,
         ox: 0, oy: 0, vx: 0, vy: 0,
         scale: 1,
@@ -231,28 +230,12 @@
     return (ok || force) ? placed : null;
   }
 
-  /* 悬浮：轻微上下浮动；指针划过时把附近词条弹开（字号越小弹得越少）；
-     指针静止时，正对的词条放大并吸附到指针附近 */
+  /* 悬浮：轻微上下浮动；指针停在词条上时略微放大
+     （模糊 -> 清晰的"打捞"效果由 CSS 的 filter 过渡负责） */
   function startCloudMotion(host) {
     if (cloudRaf) return;
 
-    var RADIUS = 82;          /* 指针影响半径 */
-    var PUSH = 30;            /* 最大弹开距离（字号最大的词条） */
-    var MIN_PUSH_RATIO = 0.35;/* 最小字号保留的弹开比例 */
-    var STILL_MS = 140;       /* 指针静止多久算"停住" */
-    var HOVER_SCALE = 1.08;      /* 正对时放大的倍数 */
-    var pointer = { x: -9999, y: -9999, lx: -9999, ly: -9999, active: false, still: 0 };
-
-    host.addEventListener('pointermove', function (e) {
-      var rect = host.getBoundingClientRect();
-      pointer.x = e.clientX - rect.left;
-      pointer.y = e.clientY - rect.top;
-      pointer.active = true;
-    });
-    host.addEventListener('pointerleave', function () {
-      pointer.active = false;
-      pointer.still = 0;
-    });
+    var HOVER_SCALE = 1.08;   /* 悬停时放大的倍数 */
 
     cloudState.forEach(function (item) {
       item.el.addEventListener('pointerenter', function () {
@@ -270,34 +253,9 @@
       var dt = last ? Math.min((now - last) / 16.7, 3) : 1;
       last = now;
 
-      if (pointer.active) {
-        var steady = Math.abs(pointer.x - pointer.lx) < 1.5 && Math.abs(pointer.y - pointer.ly) < 1.5;
-        pointer.still = steady ? pointer.still + dt * 16.7 : 0;
-        pointer.lx = pointer.x;
-        pointer.ly = pointer.y;
-      }
-
       cloudState.forEach(function (item) {
         var tx = Math.sin(now * 0.0007 + item.phase) * 3.2;   /* 浮动目标位移 */
         var ty = Math.cos(now * 0.0009 + item.phase * 1.7) * 3.2;
-
-        /* 被指针正对的词条：停住时吸过去 */
-        if (item.hovered && pointer.active && pointer.still > STILL_MS) {
-          tx = (pointer.x - item.w / 2) - item.bx;
-          ty = (pointer.y - item.h / 2) - item.by;
-        } else if (pointer.active) {
-          /* 其他词条：按字号大小决定被推开多远 */
-          var cx = item.bx + item.ox + item.w / 2;
-          var cy = item.by + item.oy + item.h / 2;
-          var dx = cx - pointer.x;
-          var dy = cy - pointer.y;
-          var dist = Math.sqrt(dx * dx + dy * dy) || 0.001;
-          if (dist < RADIUS) {
-            var push = (1 - dist / RADIUS) * PUSH * (MIN_PUSH_RATIO + (1 - MIN_PUSH_RATIO) * item.sizeRatio);
-            tx += dx / dist * push;
-            ty += dy / dist * push;
-          }
-        }
 
         item.vx += (tx - item.ox) * 0.08 * dt;
         item.vy += (ty - item.oy) * 0.08 * dt;

@@ -69,7 +69,9 @@ a:hover {
 .sidebar-brand {
   display: block;
   margin-bottom: 6px;
-  font-size: 1.25rem;
+  /* 32.2px：比最大的分页标题（文章页 1.7rem = 27.2px）大 5px */
+  font-size: calc(1.7rem + 5px);
+  line-height: 1.35;
   font-weight: 600;
   letter-spacing: 0.06em;
   border-bottom: none;
@@ -165,8 +167,17 @@ a:hover {
   left: 0;
   top: 0;
   white-space: nowrap;
-  will-change: transform;
-  transition: color 0.18s ease;
+  will-change: transform, filter;
+  /* 默认像沉在水里：轻微模糊、略淡 */
+  filter: blur(1.6px);
+  opacity: 0.78;
+  transition: color 0.18s ease, filter 0.55s ease, opacity 0.55s ease;
+}
+
+/* 指针碰到词条：像被捞出来一样逐渐清晰 */
+.tag-cloud.is-cloud .cloud-item:hover {
+  filter: blur(0);
+  opacity: 1;
 }
 
 .cloud-item {
