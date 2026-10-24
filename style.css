@@ -508,3 +508,325 @@ a:hover {
     font-size: 1.4rem;
   }
 }
+
+/* ---------- 单篇密码锁 ---------- */
+
+.lock-badge {
+  margin-left: 8px;
+  padding: 1px 6px;
+  border: 1px solid var(--line-strong);
+  border-radius: 3px;
+  color: var(--text-muted);
+  font-size: 0.68rem;
+  font-weight: 400;
+  letter-spacing: 0.08em;
+  vertical-align: middle;
+}
+
+.lock-box {
+  margin-top: 36px;
+  padding: 28px 24px;
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  background: var(--bg-soft);
+}
+
+.lock-hint {
+  margin: 0 0 16px;
+  color: var(--text-soft);
+  font-size: 0.94rem;
+}
+
+.lock-form {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.lock-input {
+  flex: 1 1 200px;
+  min-width: 0;
+  padding: 9px 12px;
+  border: 1px solid var(--line-strong);
+  border-radius: 3px;
+  background: #ffffff;
+  color: var(--text);
+  font: inherit;
+  font-size: 0.94rem;
+}
+
+.lock-input:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
+.lock-btn {
+  padding: 9px 20px;
+  border: 1px solid var(--accent);
+  border-radius: 3px;
+  background: var(--accent);
+  color: #ffffff;
+  font: inherit;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: opacity 0.15s ease;
+}
+
+.lock-btn:hover {
+  opacity: 0.85;
+}
+
+.lock-msg {
+  margin: 12px 0 0;
+  color: var(--text-muted);
+  font-size: 0.84rem;
+}
+
+/* ---------- 文章编辑器 ---------- */
+
+.editor {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 56px 32px 96px;
+}
+
+.editor-head {
+  margin-bottom: 36px;
+}
+
+.editor-title {
+  margin: 0 0 10px;
+  font-size: 1.6rem;
+  font-weight: 600;
+}
+
+.editor-intro {
+  margin: 0;
+  color: var(--text-muted);
+  font-size: 0.9rem;
+}
+
+.editor-intro code,
+.editor-hint code {
+  padding: 1px 5px;
+  background: var(--bg-soft);
+  border: 1px solid var(--line);
+  border-radius: 3px;
+  font-size: 0.9em;
+}
+
+.editor-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 40px;
+  align-items: start;
+}
+
+.editor-form {
+  min-width: 0;
+}
+
+.field {
+  margin-bottom: 18px;
+}
+
+.field label {
+  display: block;
+  margin-bottom: 6px;
+  color: var(--text-soft);
+  font-size: 0.84rem;
+}
+
+.field input,
+.field select,
+.field textarea {
+  width: 100%;
+  padding: 9px 12px;
+  border: 1px solid var(--line-strong);
+  border-radius: 3px;
+  background: #ffffff;
+  color: var(--text);
+  font: inherit;
+  font-size: 0.94rem;
+}
+
+.field textarea {
+  line-height: 1.7;
+  resize: vertical;
+}
+
+.field input:focus,
+.field select:focus,
+.field textarea:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
+.field-row {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.editor-preview {
+  position: sticky;
+  top: 40px;
+  min-width: 0;
+  max-height: calc(100vh - 80px);
+  overflow-y: auto;
+  padding-left: 32px;
+  border-left: 1px solid var(--line);
+}
+
+.editor-preview-title {
+  margin: 0 0 18px;
+  color: var(--text-muted);
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+}
+
+.editor-preview .article-body {
+  margin-top: 24px;
+}
+
+.editor-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  margin: 40px 0 8px;
+  padding-top: 28px;
+  border-top: 1px solid var(--line);
+}
+
+.editor-status {
+  flex: 1 1 100%;
+  margin: 8px 0 0;
+  color: var(--text-muted);
+  font-size: 0.84rem;
+}
+
+.editor-status.is-error {
+  color: #a33333;
+}
+
+.btn {
+  padding: 9px 18px;
+  border: 1px solid var(--line-strong);
+  border-radius: 3px;
+  background: #ffffff;
+  color: var(--text);
+  font: inherit;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: border-color 0.15s ease, opacity 0.15s ease;
+}
+
+.btn:hover {
+  border-color: var(--accent);
+}
+
+.btn-primary {
+  border-color: var(--accent);
+  background: var(--accent);
+  color: #ffffff;
+}
+
+.btn-primary:hover {
+  opacity: 0.85;
+}
+
+.btn-ghost {
+  color: var(--text-muted);
+}
+
+.btn-small {
+  padding: 5px 12px;
+  font-size: 0.82rem;
+}
+
+.editor-lists {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 40px;
+  margin-top: 48px;
+}
+
+.editor-list-title {
+  margin: 0 0 16px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--line);
+  font-size: 0.98rem;
+  font-weight: 600;
+}
+
+.editor-count {
+  color: var(--text-muted);
+  font-size: 0.84rem;
+  font-weight: 400;
+}
+
+.editor-hint {
+  margin: 0 0 16px;
+  color: var(--text-muted);
+  font-size: 0.82rem;
+}
+
+.editor-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--line);
+}
+
+.editor-item-main {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.editor-item-title {
+  margin: 0 0 4px;
+  font-size: 0.94rem;
+  font-weight: 600;
+}
+
+.editor-item-title a {
+  border-bottom: none;
+}
+
+.editor-item-title a:hover {
+  border-bottom: 1px solid #000000;
+}
+
+.editor-item-meta {
+  margin: 0;
+  color: var(--text-muted);
+  font-size: 0.78rem;
+}
+
+.editor-item-acts {
+  flex: 0 0 auto;
+  display: flex;
+  gap: 6px;
+}
+
+@media (max-width: 900px) {
+  .editor {
+    padding: 36px 20px 72px;
+  }
+
+  .editor-grid,
+  .editor-lists {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .editor-preview {
+    position: static;
+    max-height: none;
+    padding: 28px 0 0;
+    border-left: none;
+    border-top: 1px solid var(--line);
+  }
+}

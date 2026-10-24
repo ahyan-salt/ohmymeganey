@@ -17,6 +17,10 @@
   var REDUCED_MOTION = !!(window.matchMedia &&
     window.matchMedia('(prefers-reduced-motion: reduce)').matches);
 
+  /* 公开文章（site-data.js）+ 加密文章（locked-posts.js）合在一起 */
+  var ALL_POSTS = (typeof SITE_POSTS !== 'undefined' ? SITE_POSTS : [])
+    .concat((typeof window.LOCKED_POSTS !== 'undefined' && window.LOCKED_POSTS) || []);
+
   function categoryOf(id) {
     for (var i = 0; i < SITE_CATEGORIES.length; i++) {
       if (SITE_CATEGORIES[i].id === id) return SITE_CATEGORIES[i];
@@ -33,14 +37,14 @@
   }
 
   function postsSorted() {
-    return SITE_POSTS.slice().sort(function (a, b) {
+    return ALL_POSTS.slice().sort(function (a, b) {
       return String(b.date).localeCompare(String(a.date));
     });
   }
 
   function collectTags() {
     var map = {};
-    SITE_POSTS.forEach(function (post) {
+    ALL_POSTS.forEach(function (post) {
       (post.tags || []).forEach(function (tag) {
         map[tag] = (map[tag] || 0) + 1;
       });
@@ -287,7 +291,8 @@
     }).join(' ');
     return '<article class="post-card">' +
       '<h2 class="post-card-title"><a href="post.html?slug=' + encodeURIComponent(post.slug) + '">' +
-        escapeHtml(post.title) + '</a></h2>' +
+        escapeHtml(post.title) + '</a>' +
+        (post.locked ? '<span class="lock-badge">密碼</span>' : '') + '</h2>' +
       '<p class="post-meta">' + escapeHtml(post.date) + ' · ' +
         '<a href="' + categoryHref(cat.id) + '">' + escapeHtml(cat.name) + '</a></p>' +
       '<p class="post-excerpt">' + escapeHtml(post.excerpt || '') + '</p>' +
@@ -342,8 +347,8 @@
     var params = new URLSearchParams(window.location.search);
     var slug = params.get('slug');
     var post = null;
-    for (var i = 0; i < SITE_POSTS.length; i++) {
-      if (SITE_POSTS[i].slug === slug) { post = SITE_POSTS[i]; break; }
+    for (var i = 0; i < ALL_POSTS.length; i++) {
+      if (ALL_POSTS[i].slug === slug) { post = ALL_POSTS[i]; break; }
     }
     if (!post) {
       host.innerHTML = '<h1>文章不存在</h1><p class="empty">链接可能已经失效，' +
@@ -355,14 +360,81 @@
     var tags = (post.tags || []).map(function (tag) {
       return '<a class="tag" href="' + tagHref(tag) + '">#' + escapeHtml(tag) + '</a>';
     }).join(' ');
-    host.innerHTML =
+
+    var head =
       '<h1 class="article-title">' + escapeHtml(post.title) + '</h1>' +
       '<p class="post-meta">' + escapeHtml(post.date) + ' · ' +
-        '<a href="' + categoryHref(cat.id) + '">' + escapeHtml(cat.name) + '</a></p>' +
-      '<div class="article-body">' + (post.content || '') + '</div>' +
+        '<a href="' + categoryHref(cat.id) + '">' + escapeHtml(cat.name) + '</a></p>';
+    var foot =
       (tags ? '<p class="post-tags">' + tags + '</p>' : '') +
       '<p class="article-back"><a href="' + categoryHref(cat.id) + '">← 返回' +
         escapeHtml(cat.name) + '</a></p>';
+
+    /* 加密文章：先显示密码框，验证通过后才渲染正文 */
+    if (post.locked && post.enc) {
+      host.innerHTML = head +
+        '<div class="lock-box" data-lock-box>' +
+          '<p class="lock-hint">這篇文章已上鎖，請輸入密碼閱讀。</p>' +
+          '<form class="lock-form" data-lock-form>' +
+            '<input class="lock-input" type="password" placeholder="密碼" ' +
+              'autocomplete="current-password" data-lock-input>' +
+            '<button class="lock-btn" type="submit">解鎖</button>' +
+          '</form>' +
+          '<p class="lock-msg" data-lock-msg></p>' +
+        '</div>' +
+        '<div class="article-body" data-locked-body hidden></div>' + foot;
+      setupLock(host, post);
+      return;
+    }
+
+    host.innerHTML = head +
+      '<div class="article-body">' + (post.content || '') + '</div>' + foot;
+  }
+
+  /* 密码框交互：输入正确密码后解密并展示正文 */
+  function setupLock(host, post) {
+    var box = host.querySelector('[data-lock-box]');
+    var form = host.querySelector('[data-lock-form]');
+    var input = host.querySelector('[data-lock-input]');
+    var msg = host.querySelector('[data-lock-msg]');
+    var body = host.querySelector('[data-locked-body]');
+    if (!box || !form) return;
+
+    if (!window.Lock || !window.Markdown) {
+      msg.textContent = '缺少解密脚本，請確認已上傳 js/lock.js 與 js/markdown.js。';
+      return;
+    }
+    if (!Lock.supported()) {
+      msg.textContent = '當前環境不支援解密（請用 https 網址打開這個頁面）。';
+      return;
+    }
+
+    function unlock(password) {
+      msg.textContent = '正在解密…';
+      Lock.decrypt(password, post.enc).then(function (markdown) {
+        body.innerHTML = Markdown.toHtml(markdown);
+        body.hidden = false;
+        box.hidden = true;
+        try { sessionStorage.setItem('rszs-unlock:' + post.slug, password); } catch (e) {}
+      }).catch(function () {
+        msg.textContent = '密碼不對，請再試一次。';
+        input.focus();
+        input.select();
+      });
+    }
+
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+      var password = input.value;
+      if (!password) return;
+      unlock(password);
+    });
+
+    /* 同一浏览器会话内解锁过，就不必重复输入 */
+    try {
+      var saved = sessionStorage.getItem('rszs-unlock:' + post.slug);
+      if (saved) { input.value = saved; unlock(saved); }
+    } catch (e) {}
   }
 
   /* ---------- 初始化 ---------- */

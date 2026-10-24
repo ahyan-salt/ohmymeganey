@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>文章編輯器</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body data-page="editor">
+  <div class="editor">
+    <header class="editor-head">
+      <h1 class="editor-title">文章編輯器</h1>
+      <p class="editor-intro">
+        在這裏寫文章、看即時預覽，然後匯出檔案上傳到 GitHub，網站會自動更新。<br>
+        <strong>公開文章</strong>：匯出 <code>.md</code> → 放進 <code>posts/</code>。<br>
+        <strong>要上鎖的文章</strong>：填密碼 → 匯出 <code>js/locked-posts.js</code> 覆蓋原檔（正文以密文保存，沒有密碼看不到）。
+      </p>
+    </header>
+
+    <div class="editor-grid">
+      <section class="editor-form">
+        <div class="field">
+          <label for="f-title">標題</label>
+          <input id="f-title" type="text" placeholder="文章標題">
+        </div>
+
+        <div class="field-row">
+          <div class="field">
+            <label for="f-cat">分類</label>
+            <select id="f-cat"></select>
+          </div>
+          <div class="field">
+            <label for="f-date">日期</label>
+            <input id="f-date" type="date">
+          </div>
+          <div class="field">
+            <label for="f-slug">網址代稱</label>
+            <input id="f-slug" type="text" placeholder="留空自動生成">
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="f-tags">標籤（用逗號分隔）</label>
+          <input id="f-tags" type="text" placeholder="看劇, 觀後感">
+        </div>
+
+        <div class="field">
+          <label for="f-excerpt">摘要（留空會自動取正文開頭）</label>
+          <input id="f-excerpt" type="text" placeholder="一句話簡介">
+        </div>
+
+        <div class="field">
+          <label for="f-lock">密碼（填了就上鎖；留空為公開文章）</label>
+          <input id="f-lock" type="password" placeholder="留空 = 不上鎖" autocomplete="new-password">
+        </div>
+
+        <div class="field">
+          <label for="f-body">正文（Markdown）</label>
+          <textarea id="f-body" rows="18" placeholder="# 小標題&#10;&#10;在這裏寫正文，空一行分段。"></textarea>
+        </div>
+      </section>
+
+      <section class="editor-preview">
+        <h2 class="editor-preview-title">即時預覽</h2>
+        <h1 class="article-title" data-pv-title>（未填標題）</h1>
+        <p class="post-meta" data-pv-meta></p>
+        <div class="article-body" data-pv-body></div>
+      </section>
+    </div>
+
+    <section class="editor-actions">
+      <button type="button" class="btn btn-primary" data-act-md>匯出公開文章 .md</button>
+      <button type="button" class="btn" data-act-lock>加密並加入鎖定列表</button>
+      <button type="button" class="btn" data-act-export>下載 locked-posts.js</button>
+      <button type="button" class="btn" data-act-copy>複製 locked-posts.js</button>
+      <button type="button" class="btn btn-ghost" data-act-clear>清空表單</button>
+      <p class="editor-status" data-status></p>
+    </section>
+
+    <section class="editor-lists">
+      <div>
+        <h2 class="editor-list-title">已上鎖的文章 <span class="editor-count" data-locked-count></span></h2>
+        <div data-locked-list></div>
+      </div>
+      <div>
+        <h2 class="editor-list-title">公開文章</h2>
+        <p class="editor-hint">這些是 <code>posts/</code> 裡已建置好的文章，要修改請直接編輯對應的 <code>.md</code> 檔案。</p>
+        <div data-public-list></div>
+      </div>
+    </section>
+  </div>
+
+  <script src="js/markdown.js"></script>
+  <script src="js/lock.js"></script>
+  <script src="js/site-data.js"></script>
+  <script src="js/locked-posts.js"></script>
+  <script src="js/editor.js"></script>
+</body>
+</html>
