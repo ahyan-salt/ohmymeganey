@@ -6,7 +6,8 @@
 const SITE_INFO = {
   "name": "人死在世",
   "title": "人死在世",
-  "description": "靈光一現"
+  "description": "靈光一現",
+  "music": "music/bgm.mp3"
 };
 
 const SITE_CATEGORIES = [
@@ -68,19 +69,6 @@ const SITE_POSTS = [
     "content": "<p>深夜写字的习惯，已经维持了很多年。</p>\n<p>夜里安静，字句落下来的声音都听得见。</p>"
   },
   {
-    "slug": "sample-blog-2",
-    "title": "示例：一顿火锅的意义",
-    "category": "blog",
-    "tags": [
-      "美食",
-      "生活记录",
-      "城市"
-    ],
-    "date": "2026-09-05",
-    "excerpt": "吃饭这件事，认真起来也是一门学问。",
-    "content": "<p>吃饭这件事，认真起来也是一门学问。</p>"
-  },
-  {
     "slug": "sample-fanfic-2",
     "title": "示例：同人长篇·第一章",
     "category": "fanfic",
@@ -92,19 +80,6 @@ const SITE_POSTS = [
     "date": "2026-08-22",
     "excerpt": "第一章示例正文。",
     "content": "<p>第一章示例正文。</p>"
-  },
-  {
-    "slug": "sample-blog-3",
-    "title": "示例：我的写作工具与流程",
-    "category": "blog",
-    "tags": [
-      "写作",
-      "工具",
-      "编程"
-    ],
-    "date": "2026-07-14",
-    "excerpt": "工具越简单，越容易开始写。",
-    "content": "<p>工具越简单，越容易开始写。</p>"
   },
   {
     "slug": "blog-260522",

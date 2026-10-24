@@ -97,6 +97,73 @@
     }
   }
 
+  /* ---------- 首页背景音乐 ---------- */
+
+  var MUSIC_KEY = 'rszs-music';   /* 记住开关状态 */
+
+  function renderMusic() {
+    var host = document.querySelector('[data-music]');
+    if (!host) return;
+    var src = SITE_INFO.music;
+    if (!src) return;
+
+    var audio = document.createElement('audio');
+    audio.src = src;
+    audio.loop = true;
+    audio.preload = 'metadata';
+    audio.volume = 0.5;
+
+    var btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'music-toggle';
+    btn.hidden = true;              /* 音乐文件不存在时不显示按钮 */
+    btn.setAttribute('aria-pressed', 'false');
+    btn.innerHTML = '<span class="music-bars" aria-hidden="true"><i></i><i></i><i></i></span>' +
+      '<span class="music-label">音樂</span>';
+
+    host.appendChild(audio);
+    host.appendChild(btn);
+
+    function paint(playing) {
+      btn.classList.toggle('is-playing', playing);
+      btn.setAttribute('aria-pressed', playing ? 'true' : 'false');
+      btn.title = playing ? '點擊暫停音樂' : '點擊播放音樂';
+    }
+
+    function remember(on) {
+      try { localStorage.setItem(MUSIC_KEY, on ? 'on' : 'off'); } catch (e) {}
+    }
+
+    function play() {
+      var started = audio.play();
+      if (started && started.then) {
+        started.then(function () { paint(true); remember(true); })
+          .catch(function () { paint(false); remember(false); });   /* 浏览器拦了自动播放 */
+      } else {
+        paint(true);
+        remember(true);
+      }
+    }
+
+    function pause() {
+      audio.pause();
+      paint(false);
+      remember(false);
+    }
+
+    audio.addEventListener('loadedmetadata', function () { btn.hidden = false; });
+    audio.addEventListener('error', function () { host.innerHTML = ''; });
+
+    btn.addEventListener('click', function () {
+      if (audio.paused) play(); else pause();
+    });
+
+    /* 上次开着就试着续播；被浏览器拦下则显示为暂停，等用户点 */
+    try {
+      if (localStorage.getItem(MUSIC_KEY) === 'on') play();
+    } catch (e) {}
+  }
+
   /* ---------- 首页词条云 ---------- */
 
   var cloudState = [];      /* 每个词条：基准位置 + 当前位移 + 速度 */
@@ -442,6 +509,7 @@
   document.addEventListener('DOMContentLoaded', function () {
     document.title = document.title || SITE_INFO.title;
     renderNav();
+    renderMusic();
     renderTagCloud();
     renderList();
     renderPost();

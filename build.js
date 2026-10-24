@@ -147,7 +147,8 @@ function main() {
     'const SITE_INFO = ' + JSON.stringify({
       name: config.name || '',
       title: config.title || '',
-      description: config.description || ''
+      description: config.description || '',
+      music: config.music || ''
     }, null, 2) + ';',
     '',
     'const SITE_CATEGORIES = ' + JSON.stringify(categories, null, 2) + ';',

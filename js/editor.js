@@ -143,6 +143,30 @@
     setStatus('已清空表單。');
   }
 
+  /* 在游標處插入圖片語法；圖片需先上傳到網站的 images/ 資料夾 */
+  function insertImage() {
+    var path = window.prompt('圖片路徑（先上傳到網站的 images/ 資料夾）', 'images/');
+    if (path === null) return;
+    path = path.trim();
+    if (!path) return;
+    var alt = window.prompt('圖片說明（可留空，圖片載入失敗時會顯示）', '');
+    if (alt === null) alt = '';
+    alt = alt.trim();
+
+    var snippet = '![' + alt + '](' + path + ')';
+    var ta = el.body;
+    var start = ta.selectionStart;
+    var end = ta.selectionEnd;
+    var value = ta.value;
+    var lead = start > 0 && value.charAt(start - 1) !== '\n' ? '\n\n' : '';
+    ta.value = value.slice(0, start) + lead + snippet + '\n' + value.slice(end);
+    var caret = start + lead.length + snippet.length + 1;
+    ta.focus();
+    ta.setSelectionRange(caret, caret);
+    updatePreview();
+    setStatus('已插入圖片語法，記得把圖片檔案放進 images/ 資料夾。');
+  }
+
   /* 匯出公開文章：產生可放進 posts/ 的 Markdown */
   function exportMarkdown() {
     var form = readForm();
@@ -340,6 +364,7 @@
     });
 
     document.querySelector('[data-act-md]').addEventListener('click', exportMarkdown);
+    document.querySelector('[data-act-image]').addEventListener('click', insertImage);
     document.querySelector('[data-act-lock]').addEventListener('click', lockPost);
     document.querySelector('[data-act-export]').addEventListener('click', exportLockedFile);
     document.querySelector('[data-act-copy]').addEventListener('click', copyLockedFile);

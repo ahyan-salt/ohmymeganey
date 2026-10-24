@@ -55,8 +55,14 @@
         </div>
 
         <div class="field">
-          <label for="f-body">正文（Markdown）</label>
+          <div class="field-head">
+            <label for="f-body">正文（Markdown）</label>
+            <button type="button" class="btn btn-small" data-act-image>插入圖片</button>
+          </div>
           <textarea id="f-body" rows="18" placeholder="# 小標題&#10;&#10;在這裏寫正文，空一行分段。"></textarea>
+          <p class="field-hint">
+            插圖：先把圖片上傳到網站的 <code>images/</code> 資料夾，正文寫 <code>![說明](images/檔名.png)</code> 就會顯示；也可以按上面的按鈕自動插入。
+          </p>
         </div>
       </section>
 

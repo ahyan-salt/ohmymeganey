@@ -607,7 +607,8 @@ a:hover {
 }
 
 .editor-intro code,
-.editor-hint code {
+.editor-hint code,
+.field-hint code {
   padding: 1px 5px;
   background: var(--bg-soft);
   border: 1px solid var(--line);
@@ -635,6 +636,25 @@ a:hover {
   margin-bottom: 6px;
   color: var(--text-soft);
   font-size: 0.84rem;
+}
+
+.field-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 6px;
+}
+
+.field-head label {
+  margin-bottom: 0;
+}
+
+.field-hint {
+  margin: 8px 0 0;
+  color: var(--text-muted);
+  font-size: 0.78rem;
+  line-height: 1.7;
 }
 
 .field input,
@@ -828,5 +848,99 @@ a:hover {
     padding: 28px 0 0;
     border-left: none;
     border-top: 1px solid var(--line);
+  }
+}
+
+/* ---------- 首页背景音乐开关（右上角） ---------- */
+
+.music-host {
+  position: fixed;
+  top: 20px;
+  right: 26px;
+  z-index: 60;
+}
+
+.music-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 12px;
+  border: 1px solid var(--line-strong);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.86);
+  color: var(--text-soft);
+  font-size: 0.78rem;
+  letter-spacing: 0.08em;
+  cursor: pointer;
+  -webkit-backdrop-filter: blur(6px);
+  backdrop-filter: blur(6px);
+  transition: color 0.15s ease, border-color 0.15s ease, background 0.15s ease;
+}
+
+.music-toggle:hover {
+  color: #000000;
+  border-color: #000000;
+}
+
+.music-toggle[hidden] {
+  display: none;
+}
+
+/* 三条竖线：播放时上下起伏 */
+.music-bars {
+  display: inline-flex;
+  align-items: flex-end;
+  gap: 2px;
+  height: 12px;
+}
+
+.music-bars i {
+  display: block;
+  width: 2px;
+  height: 4px;
+  background: currentColor;
+  border-radius: 1px;
+  opacity: 0.55;
+  transition: opacity 0.3s ease;
+}
+
+.music-toggle.is-playing {
+  color: #000000;
+  border-color: var(--accent);
+}
+
+.music-toggle.is-playing .music-bars i {
+  opacity: 1;
+  animation: music-bar 0.9s ease-in-out infinite;
+}
+
+.music-toggle.is-playing .music-bars i:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+.music-toggle.is-playing .music-bars i:nth-child(3) {
+  animation-delay: 0.4s;
+}
+
+@keyframes music-bar {
+  0%, 100% { height: 4px; }
+  50% { height: 12px; }
+}
+
+@media (max-width: 600px) {
+  .music-host {
+    top: 14px;
+    right: 16px;
+  }
+
+  .music-label {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .music-toggle.is-playing .music-bars i {
+    animation: none;
+    height: 8px;
   }
 }
